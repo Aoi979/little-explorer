@@ -1,16 +1,109 @@
 package icu.aoikajitsu
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-fun main() {
-    val name = "Kotlin"
-    //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-    // to see how IntelliJ IDEA suggests fixing it.
-    println("Hello, " + name + "!")
+import icu.aoikajitsu.parser.MarkdownParser
+import icu.aoikajitsu.visitor.MarkdownVisitor
 
-    for (i in 1..5) {
-        //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-        // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-        println("i = $i")
+suspend fun visitMarkdownText(markdownNode: String, visitor: MarkdownVisitor){
+    val markdownParser = MarkdownParser()
+    val node = markdownParser.parse(markdownNode)
+    node.accept(visitor)
+}
+
+
+
+
+
+suspend fun main() {
+    val visitor = object: MarkdownVisitor {
+        override fun visit(node: DocumentNode) {
+            TODO("Not yet implemented")
+        }
+
+        override fun visit(node: ParagraphNode) {
+            TODO("Not yet implemented")
+        }
+
+        override fun visit(node: HeadingNode) {
+            TODO("Not yet implemented")
+        }
+
+        override fun visit(node: BlockquoteNode) {
+            TODO("Not yet implemented")
+        }
+
+        override fun visit(node: UnorderedListNode) {
+            TODO("Not yet implemented")
+        }
+
+        override fun visit(node: OrderedListNode) {
+            TODO("Not yet implemented")
+        }
+
+        override fun visit(node: ListItemNode) {
+            TODO("Not yet implemented")
+        }
+
+        override fun visit(node: CodeBlockNode) {
+            TODO("Not yet implemented")
+        }
+
+        override fun visit(node: HorizontalRuleNode) {
+            TODO("Not yet implemented")
+        }
+
+        override fun visit(node: TableNode) {
+            TODO("Not yet implemented")
+        }
+
+        override fun visit(node: TextNode) {
+            TODO("Not yet implemented")
+        }
+
+        override fun visit(node: StrongNode) {
+            TODO("Not yet implemented")
+        }
+
+        override fun visit(node: EmphasisNode) {
+            TODO("Not yet implemented")
+        }
+
+        override fun visit(node: StrikethroughNode) {
+            TODO("Not yet implemented")
+        }
+
+        override fun visit(node: CodeNode) {
+            TODO("Not yet implemented")
+        }
+
+        override fun visit(node: LinkNode) {
+            TODO("Not yet implemented")
+        }
+
+        override fun visit(node: ImageNode) {
+            TODO("Not yet implemented")
+        }
+
+        override fun visit(node: AutolinkNode) {
+            TODO("Not yet implemented")
+        }
+
+        override fun visit(node: InlineHtmlNode) {
+            TODO("Not yet implemented")
+        }
+
+        override fun visit(node: MathNode) {
+            TODO("Not yet implemented")
+        }
+
+        override fun visit(node: TaskListItemNode) {
+            TODO("Not yet implemented")
+        }
+
+        override fun visit(node: FootnoteNode) {
+            TODO("Not yet implemented")
+        }
+
     }
+    val markdownText: String = "#hello world\n"
+    visitMarkdownText(markdownText,visitor)
 }

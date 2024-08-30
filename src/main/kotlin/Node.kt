@@ -1,5 +1,7 @@
 package icu.aoikajitsu
 
+import icu.aoikajitsu.visitor.MarkdownVisitor
+
 
 sealed class MarkdownNode {
     abstract val type: NodeType
@@ -9,7 +11,7 @@ sealed class MarkdownNode {
 abstract class InlineNode: MarkdownNode()
 
 abstract class BlockNode: MarkdownNode(){
-    abstract val content: String
+    open val content: String? = null
 }
 
 enum class NodeType {
@@ -41,73 +43,79 @@ enum class NodeType {
 // 文档节点，包含所有其他节点
 class DocumentNode() : MarkdownNode() {
     override val type = NodeType.DOCUMENT
+    fun accept(visitor: MarkdownVisitor){
+        visitor.visit(this)
+    }
 }
 
 // 段落节点，包含文本或其他内联节点
-class ParagraphNode(override val content: String) : BlockNode() {
+class ParagraphNode(override val content: String? = null) : BlockNode() {
     override val type = NodeType.PARAGRAPH
 }
 
 // 标题节点，包含标题级别（如 H1, H2 等）
-class HeadingNode(override val content: String, val level :Int) : BlockNode() {
+class HeadingNode(override val content: String? = null, val level :Int) : BlockNode() {
     override val type = NodeType.HEADING
 }
 
 // 引用块节点，包含引用的内容
-class BlockquoteNode(override val content: String) : BlockNode() {
+class BlockquoteNode(override val content: String? = null) : BlockNode() {
     override val type = NodeType.BLOCKQUOTE
 }
 
 // 无序列表节点，包含列表项
-class UnorderedListNode(override val content: String) : BlockNode() {
+class UnorderedListNode(override val content: String? = null) : BlockNode() {
     override val type = NodeType.UNORDERED_LIST
 }
 
 // 有序列表节点，包含列表项
-class OrderedListNode(override val content: String) : BlockNode() {
+class OrderedListNode(override val content: String? = null) : BlockNode() {
     override val type = NodeType.ORDERED_LIST
 }
 
 // 列表项节点，属于列表
-class ListItemNode(override val content: String) : BlockNode() {
+class ListItemNode(override val content: String? = null) : BlockNode() {
     override val type = NodeType.LIST_ITEM
 }
 
 // 代码块节点，包含多行代码
-class CodeBlockNode(val language: String?, override val content: String) : BlockNode() {
+class CodeBlockNode(val language: String?, override val content: String? = null) : BlockNode() {
     override val type = NodeType.CODE_BLOCK
 }
 
 // 水平分隔线节点
-class HorizontalRuleNode(override val content: String) : BlockNode() {
+class HorizontalRuleNode(override val content: String? = null) : BlockNode() {
     override val type = NodeType.HORIZONTAL_RULE
 }
 
 // 表格节点，包含表格的行和列
-class TableNode(override val content: String) : BlockNode() {
+class TableNode(override val content: String? = null) : BlockNode() {
     override val type = NodeType.TABLE
 }
 
 
 //Inline Nodes
+interface HeadingInlineNode{
+    val text: String
+}
 
 // 文本节点，表示纯文本
-class TextNode(val content: String) : InlineNode() {
+class TextNode(override val text: String) : InlineNode(), HeadingInlineNode {
     override val type = NodeType.TEXT
 }
 
 // 加粗文本节点
-class StrongNode : InlineNode() {
+class StrongNode(override val text: String) : InlineNode(), HeadingInlineNode {
     override val type = NodeType.STRONG
 }
 
 // 斜体文本节点
-class EmphasisNode : InlineNode() {
+class EmphasisNode(override val text: String) : InlineNode(), HeadingInlineNode {
     override val type = NodeType.EMPHASIS
 }
 
 // 删除线文本节点
-class StrikethroughNode : InlineNode() {
+class StrikethroughNode(override val text: String) : InlineNode() , HeadingInlineNode {
     override val type = NodeType.STRIKETHROUGH
 }
 
@@ -117,7 +125,7 @@ class CodeNode(val code: String) : InlineNode() {
 }
 
 // 链接节点，包含链接地址和可选的标题
-class LinkNode(val url: String, val title: String?) : InlineNode() {
+class LinkNode(val url: String, override val text: String) : InlineNode(), HeadingInlineNode {
     override val type = NodeType.LINK
 }
 
